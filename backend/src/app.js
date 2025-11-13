@@ -1,6 +1,13 @@
 const express = require("express");
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const authRoutes = require("./routes/authRoutes");
+
+dotenv.config();
+
 const app = express();
 app.use(express.json());
 
-// Routes (हम आगे जोड़ेंगे)
+app.use("/api/auth", authRoutes);
+
 module.exports = app;
