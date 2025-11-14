@@ -1,41 +1,47 @@
 const Sweet = require("../models/Sweet");
 
+// ==========================
+// CREATE SWEET
+// ==========================
 exports.createSweet = async (req, res) => {
   try {
     const { name, category, price, quantity } = req.body;
 
-    const sweet = await Sweet.create({
-      name,
-      category,
-      price,
-      quantity,
-    });
+    if (!name || !category || !price || !quantity) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
+    const sweet = await Sweet.create({ name, category, price, quantity });
     res.status(201).json(sweet);
+
   } catch (err) {
-    res.status(500).json({ message: "Server error", err });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
+// ==========================
+// GET ALL SWEETS
+// ==========================
 exports.getAllSweets = async (req, res) => {
   try {
     const sweets = await Sweet.find();
     res.status(200).json(sweets);
   } catch (err) {
-    res.status(500).json({ message: "Server error", err });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
+// ==========================
 // UPDATE SWEET
+// ==========================
 exports.updateSweet = async (req, res) => {
   try {
     const sweetId = req.params.id;
 
-    const updated = await Sweet.findByIdAndUpdate(
-      sweetId,
-      req.body,
-      { new: true }
-    );
+    const updated = await Sweet.findByIdAndUpdate(sweetId, req.body, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!updated) {
       return res.status(404).json({ message: "Sweet not found" });
@@ -43,11 +49,13 @@ exports.updateSweet = async (req, res) => {
 
     res.status(200).json(updated);
   } catch (err) {
-    res.status(500).json({ message: "Server error", err });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
+// ==========================
 // DELETE SWEET
+// ==========================
 exports.deleteSweet = async (req, res) => {
   try {
     const sweetId = req.params.id;
@@ -60,16 +68,21 @@ exports.deleteSweet = async (req, res) => {
 
     res.status(200).json({ message: "Sweet deleted successfully" });
   } catch (err) {
-    res.status(500).json({ message: "Server error", err });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-
-//purchase sweet
+// ==========================
+// PURCHASE SWEET
+// ==========================
 exports.purchaseSweet = async (req, res) => {
   try {
     const sweetId = req.params.id;
     const { quantity } = req.body;
+
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({ message: "Invalid purchase quantity" });
+    }
 
     const sweet = await Sweet.findById(sweetId);
     if (!sweet) return res.status(404).json({ message: "Sweet not found" });
@@ -83,19 +96,24 @@ exports.purchaseSweet = async (req, res) => {
 
     res.status(200).json(sweet);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-// Restock Controller (Admin Only)
+// ==========================
+// RESTOCK SWEET (ADMIN ONLY)
+// ==========================
 exports.restockSweet = async (req, res) => {
   try {
     const sweetId = req.params.id;
     const { quantity } = req.body;
 
-    // Check admin
     if (req.user.role !== "admin") {
       return res.status(403).json({ message: "Only admin can restock" });
+    }
+
+    if (!quantity || quantity <= 0) {
+      return res.status(400).json({ message: "Invalid restock quantity" });
     }
 
     const sweet = await Sweet.findById(sweetId);
@@ -106,28 +124,27 @@ exports.restockSweet = async (req, res) => {
 
     res.status(200).json(sweet);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
 
-//search sweet 
+// ==========================
+// SEARCH SWEETS
+// ==========================
 exports.searchSweets = async (req, res) => {
   try {
     const { name, category, minPrice, maxPrice } = req.query;
 
     let filter = {};
 
-    // Name search (case-insensitive, partial match)
     if (name) {
       filter.name = { $regex: name, $options: "i" };
     }
 
-    // Category filter
     if (category) {
       filter.category = category;
     }
 
-    // Price range filter
     if (minPrice || maxPrice) {
       filter.price = {};
       if (minPrice) filter.price.$gte = Number(minPrice);
@@ -138,6 +155,6 @@ exports.searchSweets = async (req, res) => {
     res.status(200).json(sweets);
 
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 };
