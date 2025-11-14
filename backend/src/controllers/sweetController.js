@@ -25,3 +25,41 @@ exports.getAllSweets = async (req, res) => {
     res.status(500).json({ message: "Server error", err });
   }
 };
+
+// UPDATE SWEET
+exports.updateSweet = async (req, res) => {
+  try {
+    const sweetId = req.params.id;
+
+    const updated = await Sweet.findByIdAndUpdate(
+      sweetId,
+      req.body,
+      { new: true }
+    );
+
+    if (!updated) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", err });
+  }
+};
+
+// DELETE SWEET
+exports.deleteSweet = async (req, res) => {
+  try {
+    const sweetId = req.params.id;
+
+    const deleted = await Sweet.findByIdAndDelete(sweetId);
+
+    if (!deleted) {
+      return res.status(404).json({ message: "Sweet not found" });
+    }
+
+    res.status(200).json({ message: "Sweet deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", err });
+  }
+};
