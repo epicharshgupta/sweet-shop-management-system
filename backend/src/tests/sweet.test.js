@@ -1,7 +1,7 @@
 require("dotenv").config();
 const request = require("supertest");
-const app = require("../app");
 const mongoose = require("mongoose");
+const app = require("../app");
 const User = require("../models/User");
 const Sweet = require("../models/Sweet");
 
@@ -13,19 +13,20 @@ describe("Sweets API", () => {
   beforeAll(async () => {
     await mongoose.connect(process.env.MONGO_URI);
 
-    // एक user register करें और login करें
+    // Register user
     await request(app).post("/api/auth/register").send({
       name: "Sweet Tester",
       email: "sweet@test.com",
       password: "password123",
     });
 
-    const res = await request(app).post("/api/auth/login").send({
+    // Login user
+    const loginRes = await request(app).post("/api/auth/login").send({
       email: "sweet@test.com",
       password: "password123",
     });
 
-    token = res.body.token;
+    token = loginRes.body.token;
   });
 
   beforeEach(async () => {
@@ -36,6 +37,9 @@ describe("Sweets API", () => {
     await mongoose.connection.close();
   });
 
+  // -----------------------------------------
+  // CREATE SWEET TEST
+  // -----------------------------------------
   it("should create a new sweet", async () => {
     const res = await request(app)
       .post("/api/sweets")
@@ -46,18 +50,21 @@ describe("Sweets API", () => {
         price: 50,
         quantity: 20,
       });
+
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty("name", "Rasgulla");
   });
 
+  // -----------------------------------------
+  // GET ALL SWEETS TEST
+  // -----------------------------------------
   it("should get all sweets", async () => {
-    const sweet = new Sweet({
+    await Sweet.create({
       name: "Ladoo",
       category: "Indian",
       price: 30,
       quantity: 10,
     });
-    await sweet.save();
 
     const res = await request(app)
       .get("/api/sweets")
@@ -65,5 +72,49 @@ describe("Sweets API", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body.length).toBeGreaterThan(0);
+  });
+
+  // -----------------------------------------
+  // UPDATE SWEET TEST
+  // -----------------------------------------
+  it("should update a sweet", async () => {
+    const sweet = await Sweet.create({
+      name: "Barfi",
+      category: "Indian",
+      price: 40,
+      quantity: 15,
+    });
+
+    const res = await request(app)
+      .put(`/api/sweets/${sweet._id}`)
+      .set("Authorization", `Bearer ${token}`)
+      .send({
+        name: "Kaju Barfi",
+        category: "Indian",
+        price: 60,
+        quantity: 20,
+      });
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("name", "Kaju Barfi");
+  });
+
+  // -----------------------------------------
+  // DELETE SWEET TEST
+  // -----------------------------------------
+  it("should delete a sweet", async () => {
+    const sweet = await Sweet.create({
+      name: "Jalebi",
+      category: "Indian",
+      price: 30,
+      quantity: 25,
+    });
+
+    const res = await request(app)
+      .delete(`/api/sweets/${sweet._id}`)
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body).toHaveProperty("message", "Sweet deleted successfully");
   });
 });
