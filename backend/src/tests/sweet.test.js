@@ -148,3 +148,49 @@ describe("Sweets API", () => {
     expect(res.body.quantity).toBe(15);
   });
 });
+
+
+it("should search sweets by name", async () => {
+  await Sweet.create([
+    { name: "Rasgulla", category: "Bengali", price: 50, quantity: 10 },
+    { name: "Gulab Jamun", category: "Indian", price: 40, quantity: 12 }
+  ]);
+
+  const res = await request(app)
+    .get("/api/sweets/search?name=ras")
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(200);
+  expect(res.body.length).toBe(1);
+  expect(res.body[0].name).toBe("Rasgulla");
+});
+
+it("should filter sweets by category", async () => {
+  await Sweet.create([
+    { name: "Rasgulla", category: "Bengali", price: 50, quantity: 10 },
+    { name: "Ladoo", category: "Indian", price: 30, quantity: 15 }
+  ]);
+
+  const res = await request(app)
+    .get("/api/sweets/search?category=Indian")
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(200);
+  expect(res.body.length).toBe(1);
+  expect(res.body[0].category).toBe("Indian");
+});
+
+it("should filter sweets by price range", async () => {
+  await Sweet.create([
+    { name: "Rasgulla", category: "Bengali", price: 50, quantity: 10 },
+    { name: "Kaju Katli", category: "Indian", price: 100, quantity: 5 }
+  ]);
+
+  const res = await request(app)
+    .get("/api/sweets/search?minPrice=40&maxPrice=80")
+    .set("Authorization", `Bearer ${token}`);
+
+  expect(res.statusCode).toBe(200);
+  expect(res.body.length).toBe(1);
+  expect(res.body[0].name).toBe("Rasgulla");
+});
