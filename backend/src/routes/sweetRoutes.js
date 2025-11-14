@@ -1,25 +1,26 @@
 const express = require("express");
 const router = express.Router();
 
-const { createSweet, getAllSweets,updateSweet,
-  deleteSweet,purchaseSweet ,restockSweet,searchSweets} = require("../controllers/sweetController");
-const { authMiddleware } = require("../middleware/authMiddleware");
+const authMiddleware = require("../middleware/authMiddleware");
+const adminMiddleware = require("../middleware/adminMiddleware");
 
-// Protected routes, but अभी हम auth middleware बाद में जोड़ेंगे
-router.post("/", createSweet);
-router.get("/", getAllSweets);
-// Update sweet
-router.put("/:id", updateSweet);
+const { 
+  createSweet,
+  getAllSweets,
+  updateSweet,
+  deleteSweet,
+  purchaseSweet,
+  restockSweet,
+  searchSweets
+} = require("../controllers/sweetController");
 
-// Delete sweet
-router.delete("/:id", deleteSweet);
-
-// Purchase
+// Protected Routes
+router.post("/", authMiddleware, createSweet);
+router.get("/", authMiddleware, getAllSweets);
+router.put("/:id", authMiddleware, updateSweet);
+router.delete("/:id", authMiddleware, deleteSweet);
 router.post("/:id/purchase", authMiddleware, purchaseSweet);
-
-// Restock (admin only)
-router.post("/:id/restock", authMiddleware, restockSweet);
-
+router.post("/:id/restock", authMiddleware, adminMiddleware, restockSweet);
 router.get("/search", authMiddleware, searchSweets);
 
 module.exports = router;

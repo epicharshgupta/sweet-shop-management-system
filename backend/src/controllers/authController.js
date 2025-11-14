@@ -11,7 +11,7 @@ const generateToken = (user) => {
   );
 };
 
-// REGISTER USER (with role support for tests)
+// REGISTER USER (with role support)
 exports.register = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -21,16 +21,17 @@ exports.register = async (req, res) => {
     }
 
     const existingUser = await User.findOne({ email });
-    if (existingUser)
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({
       name,
       email,
-      password: hashedPassword,
-      role: role || "user", // <-- IMPORTANT: allow admin role
+      password: hashedPassword,  // store hashed password
+      role: role || "user",      // allow admin role for tests
     });
 
     const token = generateToken(user);
@@ -47,16 +48,19 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    if (!email || !password)
+    if (!email || !password) {
       return res.status(400).json({ message: "All fields are required" });
+    }
 
     const user = await User.findOne({ email });
-    if (!user)
+    if (!user) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
+    }
 
     const token = generateToken(user);
 
