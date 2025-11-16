@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -8,6 +8,14 @@ const Login = () => {
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+
+  // Disable scroll on login page
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -34,11 +42,18 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-100 via-white to-pink-200 px-4">
-      
-      {/* Glass Card */}
+    <div className="
+      flex items-start justify-center
+  h-[calc(100vh-60px)]
+  pt-10
+  bg-gradient-to-br from-pink-100 via-white to-pink-200
+  px-4
+  overflow-hidden
+    ">
+
+      {/* Card */}
       <div className="backdrop-blur-xl bg-white/40 shadow-2xl p-10 rounded-3xl w-full max-w-md border border-white/30 animate-fadeIn">
-        
+
         {/* Title */}
         <h2 className="text-4xl font-extrabold text-center text-pink-600 mb-6 drop-shadow-lg">
           Welcome Back 🍬
