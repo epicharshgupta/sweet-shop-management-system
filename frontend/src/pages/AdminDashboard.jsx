@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 const AdminDashboard = () => {
   const { user, token } = useAuth();
@@ -18,7 +19,7 @@ const AdminDashboard = () => {
   // Fetch sweets
   const loadSweets = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/sweets", {
+      const res = await fetch(`${API_URL}/api/sweets`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       const data = await res.json();
@@ -37,8 +38,8 @@ const AdminDashboard = () => {
     e.preventDefault();
 
     const url = editing
-      ? `http://localhost:4000/api/sweets/${editing._id}`
-      : "http://localhost:4000/api/sweets";
+      ? `${API_URL}/api/sweets/${editing._id}`
+      : `${API_URL}/api/sweets`;
 
     const method = editing ? "PUT" : "POST";
 
@@ -72,7 +73,7 @@ const AdminDashboard = () => {
   if (!window.confirm("Delete this sweet?")) return;
 
   try {
-    const res = await fetch(`http://localhost:4000/api/sweets/${id}`, {
+    const res = await fetch(`${API_URL}/api/sweets/${id}`, {
       method: "DELETE",
       headers: { Authorization: `Bearer ${token}` }
     });

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useEffect, useState } from "react";
+import { API_URL } from "../config";
 
 const Dashboard = () => {
   const { user, token } = useAuth();
@@ -9,7 +10,7 @@ const Dashboard = () => {
   // Fetch all sweets for count + listing
   const loadSweets = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/sweets", {
+      const res = await fetch(`${API_URL}/api/sweets`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();

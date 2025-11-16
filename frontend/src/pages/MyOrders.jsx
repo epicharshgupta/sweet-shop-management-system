@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 const MyOrders = () => {
   const { token } = useAuth();
@@ -8,7 +9,7 @@ const MyOrders = () => {
 
   const loadOrders = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/orders/my", {
+      const res = await fetch(`${API_URL}/api/orders/my`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

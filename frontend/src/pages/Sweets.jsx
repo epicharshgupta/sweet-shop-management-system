@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import PurchaseModal from "../components/PurchaseModal";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
 
 const Sweets = () => {
   const { token } = useAuth();
@@ -30,7 +31,7 @@ const Sweets = () => {
   // FETCH ALL SWEETS
   const fetchSweets = async () => {
     try {
-      const res = await fetch("http://localhost:4000/api/sweets", {
+      const res = await fetch(`${API_URL}/api/sweets`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -64,7 +65,7 @@ const Sweets = () => {
       const query = new URLSearchParams(q).toString();
 
       const res = await fetch(
-        `http://localhost:4000/api/sweets/search${query ? "?" + query : ""}`,
+        `${API_URL}/api/sweets/search${query ? "?" + query : ""}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 

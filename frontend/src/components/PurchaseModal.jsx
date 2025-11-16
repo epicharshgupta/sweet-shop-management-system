@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { API_URL } from "../config";
+
 
 const PurchaseModal = ({ sweet, token, onClose, onSuccess }) => {
   const [qty, setQty] = useState(1);
@@ -12,7 +14,7 @@ const PurchaseModal = ({ sweet, token, onClose, onSuccess }) => {
 
     try {
       const res = await fetch(
-        `http://localhost:4000/api/sweets/${sweet._id}/purchase`,
+        `${API_URL}/api/sweets/${sweet._id}/purchase`,
         {
           method: "POST",
           headers: {
