@@ -17,7 +17,7 @@ Sweet Shop Management System is a MERN-based full-stack web application designed
  React Router 
  Tailwind CSS 
  Toast Notifications 
- # Backend (To run frontend command = node server.js)
+ # Backend (To run backend command = node server.js)
  Node.js 
  Express.js
  MongoDB + Mongoose 
