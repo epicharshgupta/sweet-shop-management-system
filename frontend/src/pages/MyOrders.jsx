@@ -33,11 +33,11 @@ const MyOrders = () => {
       {/* NO ORDERS */}
       {orders.length === 0 && (
         <div className="text-center mt-20">
-          <img
+          {/* <img
             src="https://cdni.iconscout.com/illustration/premium/thumb/empty-cart-illustration-download-in-svg-png-gif-file-formats--empty-state-ecommerce-ui-pack-illustrations-7391445.png"
             alt="No orders"
             className="w-64 mx-auto"
-          />
+          /> */}
           <h2 className="text-2xl font-semibold mt-4 text-gray-600">
             No Orders Yet
           </h2>
