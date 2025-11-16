@@ -89,7 +89,7 @@ const AdminDashboard = () => {
   return (
     <div className="max-w-5xl mx-auto mt-10 px-4">
       {/* HEADER */}
-      <h1 className="text-3xl font-bold">
+      <h1 className="text-2xl font-bold">
         Welcome, {user?.name} (Admin) 👑
       </h1>
       <p className="text-gray-600 mb-6">Manage all sweets below</p>
