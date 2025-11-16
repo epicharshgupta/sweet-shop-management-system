@@ -1,6 +1,9 @@
 # 🍬 Sweet Shop Management System 
 A full-stack MERN application to manage sweets, perform purchases, track stock, manage admin operations, and provide a smooth user shopping experience. ---
+ 
 
+# Take demo of Sweet Shop:
+  https://sweet-shop-management-system-eta.vercel.app/
 # 🚀 1. Project Overview :
 Sweet Shop Management System is a MERN-based full-stack web application designed to: 
 ✔ Allow users to view, search, and purchase sweets
